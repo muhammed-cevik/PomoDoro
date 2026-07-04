@@ -38,14 +38,7 @@ jobs:
         run: |
           echo "$KEYSTORE_BASE64" | base64 --decode > keystore.jks
 
-      - name: Build Release APK
-        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
-        env:
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: gradle assembleRelease
+  
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
@@ -54,13 +47,6 @@ jobs:
           path: app/build/outputs/apk/debug/*.apk
           retention-days: 14
 
-      - name: Upload Release APK
-        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
-        uses: actions/upload-artifact@v4
-        with:
-          name: PomoDoro-release
-          path: app/build/outputs/apk/release/*.apk
-          retention-days: 30
 
       # ── Tag → GitHub Release ────────────────────────────────────────────────
       - name: Create GitHub Release
